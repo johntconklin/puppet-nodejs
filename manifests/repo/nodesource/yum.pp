@@ -18,13 +18,19 @@ class nodejs::repo::nodesource::yum {
 
   if ($ensure == 'present') {
 
+    if $::operatingsystemrelease =~ /^5\.(\d+)/ {
+      $gpgcheck = '0'
+    } else {
+      $gpgcheck = '1'
+    }
+
     yumrepo { 'nodesource':
       descr          => $descr,
       baseurl        => $baseurl,
       enabled        => '1',
       failovermethod => 'priority',
       gpgkey         => 'file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL',
-      gpgcheck       => '1',
+      gpgcheck       => $gpgcheck,
       priority       => $priority,
       proxy          => $proxy,
       proxy_password => $proxy_password,
@@ -38,7 +44,7 @@ class nodejs::repo::nodesource::yum {
       enabled        => $yum_source_enabled,
       failovermethod => 'priority',
       gpgkey         => 'file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL',
-      gpgcheck       => '1',
+      gpgcheck       => $gpgcheck,
       priority       => $priority,
       proxy          => $proxy,
       proxy_password => $proxy_password,
